@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctg.servdept.dao.CustJczgDao">
+    <select id="QryCustJczg" statementType="CALLABLE" resultType="java.util.Map">
+    {CALL if_deptinfo.qry_custjczg
+        (#{jcRc,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=CustJczg})}
+    </select>
+
+    <resultMap type="com.ctg.servdept.pojo.dto.CustJczgDto" id="CustJczg">
+        <result column="gmname" property="gmname"/>
+        <result column="gmzjlb" property="gmzjlb"/>
+        <result column="gmzjno" property="gmzjno"/>
+    </resultMap>
+
+    <update id="Update" parameterType="java.util.List" useGeneratedKeys="false" >
+        <foreach collection="list" item="icaDto" index="index" open="begin" close=";end;" separator=";">
+            UPDATE dbusrlimt.gwk_main
+            <set>
+                <if test="icaDto.isdm != null">
+                    gmismember = #{icaDto.isdm,jdbcType=VARCHAR}
+                </if>
+            </set>
+            <where>
+                <if test="icaDto.gmzjno != null">
+                    GMZJNO = #{icaDto.gmzjno,jdbcType=VARCHAR}
+                </if>
+            </where>
+        </foreach>
+    </update>
+
+    <select id="QryCustTrip" statementType="CALLABLE" resultType="java.util.Map">
+    {CALL if_deptinfo.qry_custtripinfo
+        (
+        #{tripRc,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=CustTrip})}
+    </select>
+
+    <resultMap type="com.ctg.servdept.pojo.dto.CustTripInfo" id="CustTrip">
+        <result column="fltNumber" property="fltNumber"/>
+        <result column="fltDate" property="fltDate"/>
+        <result column="saleDate" property="saleDate"/>
+        <result column="pasName" property="pasName"/>
+        <result column="pasNipp" property="pasNipp"/>
+    </resultMap>
+
+    <update id="UpdateTrip" parameterType="java.util.List" useGeneratedKeys="false" >
+        <foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
+            UPDATE dbusrit.CUSTDEPTLISTDET
+            <set>
+                <if test="item.cxFlag != null">
+                    isallowtake = #{item.cxFlag,jdbcType=VARCHAR}
+                </if>
+            </set>
+            <where>
+                <if test="item.pasNipp != null">
+                    substr(GWKH,2) = #{item.pasNipp,jdbcType=VARCHAR}
+                </if>
+            </where>
+            <if test="item.fltNumber != null">
+                AND HBH = #{item.fltNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="item.fltDate != null">
+                AND TO_CHAR(LDRQ,'yyyy-mm-dd') = #{item.fltDate,jdbcType=VARCHAR}
+            </if>
+        </foreach>
+    </update>
+</mapper>

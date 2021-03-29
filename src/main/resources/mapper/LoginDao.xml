@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctg.servdept.dao.LoginDao">
+    <select id="selectByPrimaryKey" statementType="CALLABLE" resultType="java.util.Map">
+        {CALL dbusrit.if_helppost.qry_login
+        (#{i_userId,mode=IN,jdbcType=VARCHAR},
+        #{i_passWord,mode=IN,jdbcType=VARCHAR},
+        #{i_deptId,mode=IN,jdbcType=VARCHAR},
+        #{user_name,mode=OUT,jdbcType=VARCHAR},
+        #{user_code,mode=OUT,jdbcType=VARCHAR},
+        #{dept_id,mode=OUT,jdbcType=VARCHAR},
+        #{o_status,mode=OUT,jdbcType=VARCHAR}
+        )}
+    </select>
+
+    <resultMap id="UserResultMap" type="com.ctg.servdept.pojo.until.UserEntity">
+        <result column="GMTELPH" jdbcType="VARCHAR" property="tel_num" />
+        <result column="GMNAME" jdbcType="VARCHAR" property="user_name" />
+        <result column="GMZJNO" jdbcType="VARCHAR" property="card_id" />
+    </resultMap>
+    <sql id="Base_User_List">
+    GMTELPH,GMNAME,GMZJNO
+  </sql>
+
+    <select id="qryUser" parameterType="java.lang.String" resultMap="UserResultMap">
+        select
+        <include refid="Base_User_List" />
+        from  dbusrlimt.gwk_main
+        where GMCARDNO = #{gwkh,jdbcType=VARCHAR}
+    </select>
+</mapper>

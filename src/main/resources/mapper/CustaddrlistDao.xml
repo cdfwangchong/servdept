@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctg.servdept.dao.CustaddrlistDao">
+  <insert id="insert" parameterType="java.util.List" useGeneratedKeys="false" >
+      insert into CUSTDEPTLIST (SEQID, GWKH, TEL_NUM,
+      MARKET, YYSJ, QHDD,XSDNO, PKGCNT, SEQID_C,YYSEQ,FSDATE,TYPE)
+      select DBUSRIT.SEQ_CUSTDEPTLIST.nextval,t.* from (
+      <foreach collection="list" item="icaDto" index="index" separator="UNION ALL">
+        select
+            #{icaDto.gwkh,jdbcType=VARCHAR},
+            #{icaDto.telNum,jdbcType=VARCHAR},
+            #{icaDto.market,jdbcType=VARCHAR},
+            #{icaDto.yysj,jdbcType=TIMESTAMP},
+            #{icaDto.qhdd,jdbcType=VARCHAR},
+            #{icaDto.xsdno,jdbcType=VARCHAR},
+            #{icaDto.pkgcnt,jdbcType=DECIMAL},
+            #{icaDto.seqidC,jdbcType=DECIMAL},
+            #{icaDto.yyseq,jdbcType=DECIMAL},
+            sysdate,
+            #{icaDto.type,jdbcType=VARCHAR}
+        from dual
+      </foreach>
+      )t
+  </insert>
+</mapper>

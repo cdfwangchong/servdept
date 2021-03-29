@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctg.servdept.dao.PostaddressDao">
+    <resultMap id="BaseResultMap" type="com.ctg.servdept.pojo.dto.Jcyysjinfo">
+        <id column="YYSEQ" jdbcType="DECIMAL" property="yyseq" />
+        <result column="GWKH" jdbcType="VARCHAR" property="gwkh" />
+        <result column="YYSJ" jdbcType="TIMESTAMP" property="yysj" />
+        <result column="QHDD" jdbcType="VARCHAR" property="qhdd" />
+        <result column="PREYYSJ" jdbcType="TIMESTAMP" property="preyysj" />
+        <result column="PREQHDD" jdbcType="VARCHAR" property="preqhdd" />
+        <result column="UPDFLAG" jdbcType="CHAR" property="updflag" />
+        <result column="UPDTIME" jdbcType="TIMESTAMP" property="updtime" />
+        <result column="UPDCNT" jdbcType="DECIMAL" property="updcnt" />
+        <result column="FSTIME" jdbcType="TIMESTAMP" property="fstime" />
+        <result column="ISQH" jdbcType="CHAR" property="isqh" />
+        <result column="ISYX" jdbcType="CHAR" property="isyx" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    YYSEQ, GWKH, YYSJ, QHDD, PREYYSJ, PREQHDD, UPDFLAG, UPDTIME, UPDCNT, FSTIME, ISQH,
+    ISYX
+  </sql>
+   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+       <include refid="Base_Column_List" />
+         FROM (select
+        <include refid="Base_Column_List" />
+        from JCYYSJINFO
+        where GWKH = #{cardId,jdbcType=VARCHAR}
+        order by YYSEQ DESC)
+        WHERE ROWNUM=1
+
+   </select>
+  <select id="insert" statementType="CALLABLE" resultType="java.util.Map">
+        {CALL dbusrit.IF_DEPTINFO.insert_yyrs
+        (#{yysj,mode=IN,jdbcType=TIMESTAMP},
+        #{qhdd,mode=IN,jdbcType=VARCHAR},
+        #{gwkh,mode=IN,jdbcType=VARCHAR},
+        #{ret_flag,mode=OUT,jdbcType=VARCHAR},
+        #{ret_seq,mode=OUT,jdbcType=VARCHAR}
+        )}
+  </select>
+  <select id="updateByPrimaryKey" statementType="CALLABLE" resultType="java.util.Map">
+        {CALL dbusrit.IF_DEPTINFO.update_yyrs
+        (#{yysj,mode=IN,jdbcType=TIMESTAMP},
+        #{qhdd,mode=IN,jdbcType=VARCHAR},
+        #{preyysj,mode=IN,jdbcType=TIMESTAMP},
+        #{preqhdd,mode=IN,jdbcType=VARCHAR},
+        #{yyseq,mode=IN,jdbcType=DECIMAL},
+        #{ret_flag,mode=OUT,jdbcType=VARCHAR}
+        )}
+  </select>
+</mapper>
