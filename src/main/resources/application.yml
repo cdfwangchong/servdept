@@ -1,0 +1,39 @@
+server:
+#  port: 8792
+  port: 8844
+mybatis:
+  mapper-locations: classpath:mapper/*Dao.xml
+
+  type-handlers-package: com.ctg.servdept.pojo.until.ServDeptCxjlHandler
+
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@10.190.3.10:1521:hncdfposmgr
+    username: dbusrit
+    password: nibuhao123456!
+#    url: jdbc:oracle:thin:@10.190.1.39:1521:hncdfposmgr
+#    username: dbusrit
+#    password: mgrit_0
+    driver-class-name: oracle.jdbc.OracleDriver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 6000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+
+jackson:
+  date-format: yyyy-MM-dd HH24:mi:ss
+  time-zone: GMT+8
+
+#servlet:
+#  encoding:
+#    charset: UTF-8
+#    orce: true
+#    enabled: true
