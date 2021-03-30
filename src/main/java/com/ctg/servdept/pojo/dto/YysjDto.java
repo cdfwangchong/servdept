@@ -5,22 +5,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 
 public class YysjDto {
-    private String open_id;
-
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date yysj;
 
     private String qhdd;
 
     private String gwkh;
-
-    public String getOpen_id() {
-        return open_id;
-    }
-
-    public void setOpen_id(String open_id) {
-        this.open_id = open_id;
-    }
 
     public String getQhdd() {
         return qhdd;

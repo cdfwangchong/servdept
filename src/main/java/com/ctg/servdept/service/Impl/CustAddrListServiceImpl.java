@@ -1,13 +1,12 @@
 package com.ctg.servdept.service.Impl;
 
 import cn.ctg.exceptionHandle.ServDeptNotFoundException;
-import cn.ctg.exceptionHandle.ExceptionPrintMessage;
-import com.ctg.servdept.dao.CheckCanclePostDao;
 import com.ctg.servdept.dao.CustaddrlistDao;
-import com.ctg.servdept.dao.UserlistDao;
+import com.ctg.servdept.dao.UserDao;
+
 import com.ctg.servdept.pojo.dto.Custdeptlist;
+import com.ctg.servdept.pojo.dto.GwkMainDto;
 import com.ctg.servdept.pojo.dto.InsertCustAddrAndListDto;
-import com.ctg.servdept.pojo.dto.Userlist;
 import com.ctg.servdept.pojo.until.BillEntity;
 import com.ctg.servdept.service.CustAddrListService;
 import org.apache.log4j.Logger;
@@ -27,7 +26,7 @@ public class CustAddrListServiceImpl implements CustAddrListService {
     CustaddrlistDao clDao;
 
     @Autowired
-    UserlistDao ulDao;
+    UserDao userDao;
 
     Logger logger = Logger.getLogger(CustAddrListServiceImpl.class);
 
@@ -39,9 +38,21 @@ public class CustAddrListServiceImpl implements CustAddrListService {
     @Override
     public boolean insertCustAddrList(InsertCustAddrAndListDto ica,String worknumber) {
         //查出顾客的购物卡号
-        Userlist ul = ulDao.selectByPrimaryKey(ica.getGwkh());
-        String gwkh = ul.getIdseq();//客人的购物卡号
-        String telphno = ul.getTelphno();
+        Map param = new HashMap();
+        param.put("gwkh",ica.getGwkh());
+        GwkMainDto ul;
+        try {
+            ul = userDao.selectByPrimaryKey(param);
+        } catch (Exception e) {
+            logger.error("顾客"+ica.getGwkh()+"用户信息查询异常");
+            throw new ServDeptNotFoundException(errCode,"顾客"+ica.getGwkh()+"用户信息查询异常");
+        }
+        if (ul == null) {
+            logger.error("顾客"+ica.getGwkh()+"没有记录");
+            throw new ServDeptNotFoundException(errCode3,"顾客"+ica.getGwkh()+"没有记录");
+        }
+        String gwkh = ul.getGwkh();//客人的购物卡号
+        String telphno = ul.getTelNum();
 
         List<BillEntity> PIlist = ica.getOrderList();
         Map<String,String> Markmap = new HashMap<String,String>();
@@ -134,11 +145,10 @@ public class CustAddrListServiceImpl implements CustAddrListService {
                 }
             }
         } catch (Exception e) {
-            logger.error(new ExceptionPrintMessage().errorTrackSpace(e));
             logger.error("寄存信息写入异常");
             throw new ServDeptNotFoundException(errCode3,errMsg3);
         }
-        int ret = 0;
+        int ret;
         try {
             ret = clDao.insert(icadList);
         } catch (Exception e) {

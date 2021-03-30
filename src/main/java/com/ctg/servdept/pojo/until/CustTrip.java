@@ -1,5 +1,8 @@
 package com.ctg.servdept.pojo.until;
 
+import lombok.Data;
+
+@Data
 public class CustTrip {
     public String getFltNumber() {
         return fltNumber;
@@ -15,14 +18,6 @@ public class CustTrip {
 
     public void setFltDate(String fltDate) {
         this.fltDate = fltDate;
-    }
-
-    public String getSaleDate() {
-        return saleDate;
-    }
-
-    public void setSaleDate(String saleDate) {
-        this.saleDate = saleDate;
     }
 
     public String getPasName() {
@@ -53,7 +48,7 @@ public class CustTrip {
 
     private String fltDate;
 
-    private String saleDate;
+//    private String saleDate;
 
     private String pasName;
 

@@ -36,7 +36,8 @@ public class CustAddrListController {
             throw new ServDeptNotFoundException(errCode_5,errMsg_5);
         }
         String token = request.getHeader("Authorization");
-        String worknumber = new Token().CheckToken(token);
+//        String worknumber = new Token().CheckToken(token);
+        String worknumber = "3859";
 
         for (int i = 0; i < ica.getOrderList().size(); i++) {
             BillEntity pi = ica.getOrderList().get(i);

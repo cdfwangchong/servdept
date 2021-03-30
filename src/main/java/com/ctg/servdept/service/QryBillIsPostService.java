@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface QryBillIsPostService {
 
-    XsdnoDto qryNotPostBill(Login login);
+    XsdnoDto qryNotPostBill(Login login,String worknumber);
 
-    List<CustDeptlistDetEntity> qryPostBill(Login login);
+    List<CustDeptlistDetEntity> qryPostBill(Login login,String worknumber);
 
 }

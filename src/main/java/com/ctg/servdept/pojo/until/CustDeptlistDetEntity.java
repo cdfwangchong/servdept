@@ -64,7 +64,6 @@ public class CustDeptlistDetEntity {
 
     private String xsdno;
 
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private BigDecimal yyseq;
 
     private String market;

@@ -1,6 +1,6 @@
 package com.ctg.servdept.dao;
 
-import com.ctg.servdept.pojo.dto.Postvercode;
+import com.ctg.servdept.pojo.dto.GwkMainDto;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
@@ -13,15 +13,5 @@ import java.util.Map;
 @Repository
 public interface UserDao {
 
-	Map<String, String> registerUser(Map<String, String> param);
-	
-	Map<String, String> login(Map<String, String> param);
-	
-	Map<String, String> getVercode(Map<String, String> param);
-	
-	Map<String, String> weChat(Map<String, String> param);
-
-    int insert(Postvercode pv);
-
-    Postvercode selectByPrimaryKey(Map<String, String> param);
+    GwkMainDto selectByPrimaryKey(Map<String, String> param);
 }

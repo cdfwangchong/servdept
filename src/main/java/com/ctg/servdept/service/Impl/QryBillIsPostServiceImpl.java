@@ -30,15 +30,15 @@ public class QryBillIsPostServiceImpl implements QryBillIsPostService {
      * @return
      */
     @Override
-    public XsdnoDto qryNotPostBill(Login login) {
+    public XsdnoDto qryNotPostBill(Login login,String worknumber) {
         List<BillEntity> beList;
         String ret_card;
         String ret_name;
         Map param = new HashMap<String,String>();
         XsdnoDto xsdnoDto = new XsdnoDto();
-
         try {
             param.put("gwkh",login.getGwkh());
+            param.put("operator",worknumber);
             qbipDao.qryNotPostBill(param);
             //取出结果集
             beList = (List<BillEntity>) param.get("wyjRc");
@@ -55,9 +55,10 @@ public class QryBillIsPostServiceImpl implements QryBillIsPostService {
         }
         //取出ret_flag
         String ret_flag = (String) param.get("ret_flag");
-        if ("0".equals(ret_flag)) {
-            logger.error("该日期使用邮寄提货的人数已经满");
-            throw new ServDeptNotFoundException(errCode6,errMsg6);
+        String ret_msg = (String) param.get("ret_msg");
+        if (!"1".equals(ret_flag)) {
+            logger.error(ret_msg);
+            throw new ServDeptNotFoundException(errCode6,ret_msg);
         }
         return xsdnoDto;
     }
@@ -68,20 +69,26 @@ public class QryBillIsPostServiceImpl implements QryBillIsPostService {
      * @return
      */
     @Override
-    public List<CustDeptlistDetEntity> qryPostBill(Login login) {
+    public List<CustDeptlistDetEntity> qryPostBill(Login login,String worknumber) {
         Map param = new HashMap<String,String>();
         param.put("gwkh",login.getGwkh());
+        param.put("operator",worknumber);
         List<CustDeptlistDetEntity> beyList;
-
         try {
             qbipDao.qryPostBill(param);
-
             //取出结果集
             beyList = (List<CustDeptlistDetEntity>) param.get("yjRc");
         } catch (Exception e) {
             logger.error(new ExceptionPrintMessage().errorTrackSpace(e));
             logger.error("查找已邮寄的提货单存储过程返回值异常");
             throw new ServDeptNotFoundException(errCode,errMsg);
+        }
+        //取出ret_flag
+        String ret_flag = (String) param.get("ret_flag");
+        String ret_msg = (String) param.get("ret_msg");
+        if (!"1".equals(ret_flag)) {
+            logger.error(ret_msg);
+            throw new ServDeptNotFoundException(errCode6,ret_msg);
         }
         return beyList;
     }

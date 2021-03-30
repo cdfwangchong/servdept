@@ -2,7 +2,6 @@ package com.ctg.servdept.task;
 
 import cn.ctg.exceptionHandle.ExceptionPrintMessage;
 import com.alibaba.fastjson.JSONObject;
-import com.ctg.servdept.controller.ServDeptExceptionController;
 import com.ctg.servdept.dao.CustJczgDao;
 import com.ctg.servdept.pojo.dto.CustJczgDto;
 import com.ctg.servdept.pojo.dto.CustTripInfo;
@@ -11,7 +10,6 @@ import com.ctg.servdept.pojo.until.CustTrip;
 import com.ctg.servdept.pojo.until.GetCustTripInfo;
 import com.ctg.servdept.pojo.until.HttpClientUtil;
 import com.ctg.servdept.pojo.until.TableInfo;
-import com.ctg.servdept.dao.CustJczgDao;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -109,12 +107,11 @@ public class CustJczgTask {
             logger.error("是否岛民标志更新异常");
         }
     }
-
     /**
      * 查询旅客的成行记录
      */
-    @Scheduled(cron = "* */10 * * * *")
-//    @Scheduled(cron = "* * 0-4 * * ?")//每天0-4点每小时执行一次
+//    @Scheduled(cron = "* */1 * * * *")
+    @Scheduled(cron = "* * 0-4 * * ?")//每天0-4点每小时执行一次
     public void QryCustTrip() {
         List<CustTripInfo> cjlist = null;
         List<CustTrip> ctlist = new ArrayList<CustTrip>();
@@ -126,10 +123,9 @@ public class CustJczgTask {
             logger.error(new ExceptionPrintMessage().errorTrackSpace(e));
             logger.error("查询旅客成行记录失败");
         }
-
         for (int i = 0; i < cjlist.size(); i++) {
             CustTripInfo ctDto = cjlist.get(i);
-            String saleDate = ctDto.getSaleDate();
+//            String saleDate = ctDto.getSaleDate();
             String fltDate = ctDto.getFltDate();
             String fltNumber = ctDto.getFltNumber();
             String pasName = ctDto.getPasName();
@@ -155,18 +151,17 @@ public class CustJczgTask {
                 JSONObject data = jsonObject.getJSONObject("data");
                 flag = data.getString("flag");
                 flDate = data.getString("fltDate");
-                logger.info("获取中航信接口返回值" + resultCode + flag + msg + pasNipp);
+                logger.info("获取中航信接口返回值" + resultCode + flag + msg + pasNipp+flDate);
             }
             logger.info("获取中航信信息返回标志：" + "用户名：" + pasName + "身份证：" + pasNipp);
 
             if ("N".equals(flag) || "N1".equals(flag)) {
                 ct.setCxFlag("N");//error
                 ct.setPasNipp(pasNipp);
-//                System.out.println(pasNipp);
                 ct.setFltNumber(fltNumber);
                 ct.setFltDate(fltDate);
                 ct.setPasName(pasName);
-                ct.setSaleDate(saleDate);
+//                ct.setSaleDate(saleDate);
                 logger.info("中航信返回信息为：失败");
             } else if ("Y1".equals(flag) || "Y2".equals(flag) || "Y3".equals(flag)) {
                 ct.setCxFlag("Y");//error
@@ -174,7 +169,7 @@ public class CustJczgTask {
                 ct.setFltNumber(fltNumber);
                 ct.setFltDate(fltDate);
                 ct.setPasName(pasName);
-                ct.setSaleDate(saleDate);
+//                ct.setSaleDate(saleDate);
                 logger.info(pasName + pasNipp + "有离岛成行记录，可以申请办理寄存业务");
             }else {
                 ct.setCxFlag("E");//error
@@ -182,12 +177,13 @@ public class CustJczgTask {
                 ct.setFltNumber(fltNumber);
                 ct.setFltDate(fltDate);
                 ct.setPasName(pasName);
-                ct.setSaleDate(saleDate);
+//                ct.setSaleDate(saleDate);
                 logger.info(pasName + pasNipp + "调用中航信接口失败");
             }
             ctlist.add(ct);
         }
         //将海关返回值，更新表
+        Map param = new HashMap<String,Object>();
         try {
             if (ctlist.size() > 0) {
                 for (int i = 0; i <ctlist.size() ; i++) {
@@ -195,11 +191,15 @@ public class CustJczgTask {
                     logger.info("取到要更新成行记录的顾客："+ct.getPasName()+"证件号："+ct.getPasNipp()
                            +"是否离岛："+ct.getCxFlag());
                 }
-                custJczgdao.UpdateTrip(ctlist);
+                param.put("ctlist",ctlist);
+                custJczgdao.UpdateTrip(param);
             }
         } catch (Exception e) {
             logger.error(new ExceptionPrintMessage().errorTrackSpace(e));
             logger.error("是否成行标志更新异常");
         }
+        String ret_flag = (String) param.get("ret_flag");
+        String ret_msg = (String) param.get("ret_msg");
+        logger.info(ret_flag+ret_msg);
     }
 }

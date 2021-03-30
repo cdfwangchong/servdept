@@ -42,25 +42,34 @@
         <result column="pasNipp" property="pasNipp"/>
     </resultMap>
 
-    <update id="UpdateTrip" parameterType="java.util.List" useGeneratedKeys="false" >
-        <foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">
-            UPDATE dbusrit.CUSTDEPTLISTDET
-            <set>
-                <if test="item.cxFlag != null">
-                    isallowtake = #{item.cxFlag,jdbcType=VARCHAR}
-                </if>
-            </set>
-            <where>
-                <if test="item.pasNipp != null">
-                    substr(GWKH,2) = #{item.pasNipp,jdbcType=VARCHAR}
-                </if>
-            </where>
-            <if test="item.fltNumber != null">
-                AND HBH = #{item.fltNumber,jdbcType=VARCHAR}
-            </if>
-            <if test="item.fltDate != null">
-                AND TO_CHAR(LDRQ,'yyyy-mm-dd') = #{item.fltDate,jdbcType=VARCHAR}
-            </if>
-        </foreach>
-    </update>
+<!--    <update id="UpdateTrip" parameterType="java.util.List" useGeneratedKeys="false" >-->
+<!--        <foreach collection="list" item="item" index="index" open="begin" close=";end;" separator=";">-->
+<!--            UPDATE dbusrit.CUSTDEPTLISTDET-->
+<!--            <set>-->
+<!--                <if test="item.cxFlag != null">-->
+<!--                    isallowtake = #{item.cxFlag,jdbcType=VARCHAR}-->
+<!--                </if>-->
+<!--            </set>-->
+<!--            <where>-->
+<!--                <if test="item.pasNipp != null">-->
+<!--                    substr(GWKH,2) = #{item.pasNipp,jdbcType=VARCHAR}-->
+<!--                </if>-->
+<!--            </where>-->
+<!--            <if test="item.fltNumber != null">-->
+<!--                AND HBH = #{item.fltNumber,jdbcType=VARCHAR}-->
+<!--            </if>-->
+<!--            <if test="item.fltDate != null">-->
+<!--                AND TO_CHAR(LDRQ,'yyyy-mm-dd') = #{item.fltDate,jdbcType=VARCHAR}-->
+<!--            </if>-->
+<!--        </foreach>-->
+<!--    </update>-->
+
+    <select id="UpdateTrip" statementType="CALLABLE" resultType="java.util.Map">
+        {CALL if_deptinfo.UpdateTrip
+        (#{ctlist,mode=IN,jdbcType=ARRAY,javaType=java.util.ArrayList,typeHandler=com.ctg.servdept.pojo.until.ServDeptCxjlHandler},
+        #{ret_flag,mode=OUT,jdbcType=VARCHAR},
+        #{ret_msg,mode=OUT,jdbcType=VARCHAR}
+        )}
+    </select>
+
 </mapper>

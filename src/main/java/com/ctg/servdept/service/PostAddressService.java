@@ -9,7 +9,7 @@ import java.util.Map;
 public interface PostAddressService {
     Jcyysjinfo qryPostAddress(Login login);
 
-    Map insertPostAddress(YysjDto ipaDto);
+    String insertPostAddress(YysjDto ipaDto);
 
     int updatePostAddress(Jcyysjinfo ipaDto);
 }

@@ -16,5 +16,7 @@ public interface CustJczgDao {
 
     Map QryCustTrip(Map param);
 
-    int UpdateTrip(List<CustTrip> record);
+//    int UpdateTrip(List<CustTrip> record);
+
+    Map UpdateTrip(Map<String,Object> record);
 }

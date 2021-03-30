@@ -18,7 +18,7 @@ public class GetCustTripInfo {
     Logger logger = Logger.getLogger(GetCustTripInfo.class);
 
     public JSONObject doPost(CustTripInfo all){
-        String url="http://10.191.2.17:8885/api/flight/queryTravel";//测试地址
+        String url="http://10.200.204.148:8885/api/flight/queryTravel";//测试地址
 
         HttpPost post = new HttpPost(url);
         CloseableHttpClient httpclient = HttpClientBuilder.create().build();

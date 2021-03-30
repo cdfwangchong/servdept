@@ -77,7 +77,5 @@ public class Jcyysjinfo implements Serializable {
      */
     private String isyx;
 
-    private String open_id="";
-
     private static final long serialVersionUID = 1L;
 }
